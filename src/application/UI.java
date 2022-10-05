@@ -1,7 +1,11 @@
 package application;
 
-import chess.ChessPiece;
-import chess.Color;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+import xadrez.PecaXadrez;
+import xadrez.PosicaoXadrez;
+import xadrez.Cor;
 
 public class UI {
 	
@@ -24,30 +28,49 @@ public class UI {
 	public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
 	public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 	
-	public static void printBoard(ChessPiece[][] pieces) {
+	public static void imprimirTabuleiro(PecaXadrez[][] pecas) {
 
-		for (int i=0; i<pieces.length; i++) {
+		for (int i=0; i<pecas.length; i++) {
 			System.out.print((8-i) + " ");
-			for(int j=0; j<pieces.length; j++) {
-				printPiece(pieces[i][j]);
+			for(int j=0; j<pecas.length; j++) {
+				imprimirPeca(pecas[i][j]);
 			}
 			System.out.println();
 		}
 		System.out.print("  a b c d e f g h");
 	}
 	
-	public static void printPiece(ChessPiece chessPiece) {
-		if (chessPiece == null) {
+	public static PosicaoXadrez lerPosicao(Scanner sc) {
+		try {
+			
+				String posicao = sc.nextLine();
+				
+				char col = posicao.charAt(0);
+				Integer lin = Integer.parseInt(posicao.substring(1));
+				
+				return new PosicaoXadrez(col, lin);
+		}catch(Exception e ){
+			throw new InputMismatchException("Erro lendo posição de Xadrez.");
+		}
+	}
+	
+	public static void imprimirPeca(PecaXadrez pecaXadrez) {
+		if (pecaXadrez == null) {
             System.out.print("-");
         }
         else {
-            if (chessPiece.getColor() == Color.WHITE) {
-                System.out.print(ANSI_WHITE + chessPiece + ANSI_RESET);
+            if (pecaXadrez.getCor() == Cor.BRANCO) {
+                System.out.print(ANSI_WHITE + pecaXadrez + ANSI_RESET);
             }
             else {
-                System.out.print(ANSI_YELLOW + chessPiece + ANSI_RESET);
+                System.out.print(ANSI_YELLOW + pecaXadrez + ANSI_RESET);
             }
         }
         System.out.print(" ");
+	}
+	
+	public static void limparTela() {
+		System.out.println("\033[H\033[2J");
+		System.out.flush();
 	}
 }

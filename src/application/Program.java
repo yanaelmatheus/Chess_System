@@ -1,14 +1,40 @@
 package application;
 
-import chess.ChessMatch;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+import xadrez.ChessException;
+import xadrez.ChessMatch;
+import xadrez.PecaXadrez;
+import xadrez.PosicaoXadrez;
 
 public class Program {
 
 	public static void main(String[] args) {
-		ChessMatch cm = new ChessMatch(8,8);
+		Scanner sc = new Scanner(System.in);
+		ChessMatch cm = new ChessMatch();
 		
-		UI.printBoard(cm.getPieces());
-
+		while(true) {
+			try{
+				UI.limparTela();
+				UI.imprimirTabuleiro(cm.getPecas());
+				System.out.println();
+				System.out.println("Origem: ");
+				PosicaoXadrez posicaoOrigem = UI.lerPosicao(sc);
+				//ch.verificaPossiveisMovimentos();
+				
+				System.out.println();
+				System.out.println("Destino: ");
+				PosicaoXadrez posicaoDestino = UI.lerPosicao(sc);
+				PecaXadrez pecaCapturada = cm.executarMovimento(posicaoOrigem, posicaoDestino);
+			}catch(ChessException e ) {
+				System.out.println(e.getMessage());
+				sc.nextLine();
+			} catch(InputMismatchException e) {
+				System.out.println(e.getMessage());
+				sc.nextLine();
+			}
+		}
 	}
 
 }
