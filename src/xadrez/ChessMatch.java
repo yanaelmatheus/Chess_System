@@ -29,11 +29,20 @@ public class ChessMatch {
 		
 		return mat;
 	}
+	
+	public boolean[][] movimentosPossiveis(PosicaoXadrez posicaoOrigem){
+		Posicao posicao = posicaoOrigem.converterParaPosicao();
+		validarPosicaoOrigem(posicao);
+		
+		return board.buscarPeca(posicao).movimentoPossivel();
+	}
+	
 	public PecaXadrez executarMovimento(PosicaoXadrez posicaoOrigem, PosicaoXadrez posicaoDestino) {
 		Posicao origem = posicaoOrigem.converterParaPosicao();
 		Posicao destino = posicaoDestino.converterParaPosicao();
 		
-		validarPecaOrigem(origem);
+		validarPosicaoOrigem(origem);
+		validarPosicaoDestino(origem, destino);
 		return (PecaXadrez) realizarMovimento(origem, destino);
 		
 	}
@@ -50,15 +59,21 @@ public class ChessMatch {
 		
 		return pecaCapturada;
 	}
-	public void validarPecaOrigem(Posicao posicaoOrigem) {
+	public void validarPosicaoOrigem(Posicao posicaoOrigem) {
 		if(!board.VerificaPecaPosicao(posicaoOrigem)) {
 			throw new ChessException("Não existe uma peça nessa posição.");
 		}
+		
 		if(!board.buscarPeca(posicaoOrigem).existeAlgumMovimentoPossivel()) {
 			throw new ChessException("Não existe nenhum movimento Possível!");
 		}
 	}
 	
+	private void validarPosicaoDestino(Posicao posicaoOrigem, Posicao posicaoDestino) {
+		if(!board.buscarPeca(posicaoOrigem).movimentoPossivel(posicaoDestino)) {
+			throw new ChessException("A posicao de destino não é um movimento Possivel!");
+		}
+	}
 	public void initialSetup() {
 		putNewPiece(new Torre(board, Cor.BRANCO), new PosicaoXadrez('c', 1));
 		putNewPiece(new Torre(board, Cor.BRANCO), new PosicaoXadrez('c', 2));
